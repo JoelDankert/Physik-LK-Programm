@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <title>Physik Quiz</title>
+    <style>
+      :root {
+        --bg: #f4f7f2;
+        --panel: #ffffff;
+        --soft: #ebf1e8;
+        --line: #d5ddd1;
+        --line-strong: #bcc8b7;
+        --text: #172018;
+        --muted: #677065;
+        --green: #2e7d32;
+        --green-deep: #1e5a22;
+        --shadow: 0 20px 60px rgba(20, 31, 20, 0.12);
+        --font-ui: "Segoe UI Variable", "Aptos", "Trebuchet MS", sans-serif;
+        --font-display: "Arial Black", "Bahnschrift", "DIN Alternate", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top, rgba(46, 125, 50, 0.09), transparent 30%),
+          linear-gradient(180deg, #f7faf5 0%, #eef4eb 100%);
+        color: var(--text);
+        font-family: var(--font-ui);
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        padding: 20px;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 20px;
+      }
+
+      .scoreboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 18px;
+        align-items: center;
+      }
+
+      .team-card {
+        min-width: 0;
+        padding: 22px 24px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: 0 8px 24px rgba(23, 32, 24, 0.05);
+        display: grid;
+        gap: 8px;
+        transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      }
+
+      .team-card:hover {
+        border-color: var(--line-strong);
+        transform: translateY(-1px);
+        box-shadow: 0 12px 30px rgba(23, 32, 24, 0.08);
+      }
+
+      .team-card-left {
+        justify-items: start;
+        text-align: left;
+      }
+
+      .team-card-right {
+        justify-items: end;
+        text-align: right;
+      }
+
+      .team-label {
+        font-family: var(--font-display);
+        font-size: clamp(1rem, 1.5vw, 1.45rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        line-height: 1.02;
+        font-weight: 800;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .team-edit-button {
+        padding: 0;
+        border-radius: 6px;
+      }
+
+      .team-edit-button:focus-visible {
+        outline: 2px solid rgba(46, 125, 50, 0.34);
+        outline-offset: 4px;
+      }
+
+      .team-score {
+        font-family: var(--font-display);
+        font-size: clamp(3.4rem, 7vw, 6rem);
+        letter-spacing: 0.03em;
+        line-height: 0.95;
+      }
+
+      .quiz-title {
+        padding: 0 20px;
+        min-height: 80px;
+        border-radius: 18px;
+        background: transparent;
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        user-select: none;
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+      }
+
+      .quiz-title span {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 5vw, 4.4rem);
+        letter-spacing: 0.03em;
+        line-height: 0.9;
+      }
+
+      .quiz-title:hover,
+      .quiz-title:focus,
+      .quiz-title:active,
+      .quiz-title:focus-visible {
+        background: transparent;
+        color: var(--text);
+        outline: none;
+        box-shadow: none;
+      }
+
+      .board-wrap {
+        min-height: 0;
+      }
+
+      .board {
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-rows: 120px repeat(4, minmax(140px, 1fr));
+        gap: 14px;
+      }
+
+      .category-cell,
+      .value-cell {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 8px 24px rgba(23, 32, 24, 0.05);
+      }
+
+      .category-cell {
+        padding: 18px 14px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-size: clamp(1.5rem, 2.2vw, 2.4rem);
+        line-height: 1.02;
+        font-weight: 800;
+      }
+
+      .value-cell {
+        position: relative;
+        display: grid;
+        place-items: center;
+        font-family: var(--font-display);
+        font-size: clamp(3rem, 7vw, 5.6rem);
+        letter-spacing: 0.04em;
+        color: var(--green);
+        transition: transform 180ms ease, border-color 180ms ease, opacity 180ms ease;
+      }
+
+      .value-cell:hover,
+      .value-cell:focus-visible {
+        transform: translateY(-2px);
+        border-color: var(--line-strong);
+      }
+
+      .value-cell.used {
+        color: rgba(46, 125, 50, 0.12);
+        background: rgba(255, 255, 255, 0.46);
+        border-color: rgba(213, 221, 209, 0.52);
+        box-shadow: none;
+        opacity: 0.5;
+      }
+
+      .value-cell.missing {
+        opacity: 0.32;
+        pointer-events: none;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 21, 16, 0.34);
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        z-index: 50;
+        animation: fade-in 200ms ease;
+      }
+
+      .question-modal,
+      .editor-modal {
+        width: min(880px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        position: relative;
+        animation: rise-in 230ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .question-modal {
+        padding: 40px 38px 32px;
+        overflow: hidden;
+      }
+
+      .editor-modal {
+        width: min(720px, 100%);
+        padding: 34px 28px 26px;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--soft);
+        color: var(--text);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .question-kicker,
+      .editor-kicker,
+      .answer-kicker {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .question-text {
+        margin: 14px 0 0;
+        font-family: var(--font-display);
+        font-size: clamp(2.1rem, 4vw, 3.5rem);
+        line-height: 0.98;
+        letter-spacing: 0.02em;
+        width: 100%;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .choices-grid {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .choice-card {
+        min-height: 128px;
+        padding: 18px 20px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background:
+          linear-gradient(180deg, rgba(46, 125, 50, 0.04), rgba(46, 125, 50, 0.01)),
+          var(--soft);
+        display: grid;
+        align-content: center;
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+      }
+
+      .choice-text {
+        font-family: var(--font-display);
+        font-size: clamp(1.35rem, 2.2vw, 2rem);
+        line-height: 1.04;
+        width: 100%;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .choice-card.revealed-correct {
+        background: linear-gradient(180deg, #4caf50, #2e7d32);
+        border-color: #2e7d32;
+        color: #ffffff;
+      }
+
+      .choice-card.answer-only {
+        grid-column: 1 / -1;
+        max-width: 520px;
+        justify-self: center;
+        text-align: center;
+      }
+
+      .primary-button,
+      .quiet-button,
+      .result-button {
+        min-height: 68px;
+        border-radius: 10px;
+        font-size: 1.55rem;
+        font-weight: 800;
+      }
+
+      .primary-button {
+        margin-top: 24px;
+        margin-bottom: 16px;
+        width: 100%;
+        background: var(--green);
+        color: #fff;
+        min-height: 76px;
+      }
+
+      .quiet-button {
+        background: var(--soft);
+        color: var(--text);
+        min-height: 76px;
+      }
+
+      .answer-panel {
+        margin-top: 0;
+        padding-top: 16px;
+      }
+
+      .answer-kicker,
+      .answer-text {
+        display: none;
+      }
+
+      #question-category {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 4.4vw, 4rem);
+        line-height: 0.92;
+        letter-spacing: 0.02em;
+        color: var(--green);
+        width: 100%;
+        max-width: calc(100% - 56px);
+        padding-right: 8px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .result-actions {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .result-button {
+        background: var(--soft);
+        color: var(--text);
+      }
+
+      .result-button.neutral {
+        color: var(--muted);
+      }
+
+      .editor-input {
+        width: 100%;
+        margin-top: 16px;
+        min-height: 92px;
+        padding: 18px 20px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        color: var(--text);
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 1;
+        outline: none;
+      }
+
+      .editor-input:focus {
+        border-color: var(--green);
+      }
+
+      .editor-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .editor-actions > button {
+        flex: 1 1 0;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.985);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .app-shell {
+          padding: 14px;
+          gap: 14px;
+        }
+
+        .scoreboard {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .team-card {
+          padding: 13px 14px;
+        }
+
+        .quiz-title {
+          min-height: 56px;
+          order: -1;
+        }
+
+        .board {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-rows: 90px repeat(4, minmax(96px, 1fr));
+          gap: 8px;
+        }
+
+        .category-cell {
+          font-size: 0.88rem;
+          padding: 10px 8px;
+        }
+
+        .value-cell {
+          font-size: clamp(2rem, 7vw, 3.2rem);
+        }
+
+        .question-modal {
+          padding: 28px 18px 20px;
+        }
+
+        .question-text {
+          font-size: clamp(2.2rem, 8vw, 3.4rem);
+        }
+
+        #question-category {
+          font-size: clamp(2rem, 7vw, 3rem);
+        }
+
+        .choices-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .choice-text {
+          font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="scoreboard" aria-label="Punktestand">
+        <div class="team-card team-card-left">
+          <button class="team-label team-edit-button" id="team-0-name" type="button" data-edit="team-0-name">Team 1</button>
+          <button class="team-score team-edit-button" id="team-0-score" type="button" data-edit="team-0-score">0</button>
+        </div>
+        <button class="quiz-title" type="button" id="reset-orb" aria-label="Spiel zurücksetzen">
+          <span>Physik Quiz</span>
+        </button>
+        <div class="team-card team-card-right">
+          <button class="team-label team-edit-button" id="team-1-name" type="button" data-edit="team-1-name">Team 2</button>
+          <button class="team-score team-edit-button" id="team-1-score" type="button" data-edit="team-1-score">0</button>
+        </div>
+      </header>
+
+      <main class="board-wrap">
+        <section class="board" id="board" aria-label="Quizfeld"></section>
+      </main>
+    </div>
+
+    <div class="overlay hidden" id="question-overlay" aria-hidden="true">
+      <article class="question-modal">
+        <button class="close-button" type="button" id="question-close" aria-label="Schließen">×</button>
+        <div class="question-kicker" id="question-category"></div>
+        <h1 class="question-text" id="question-text"></h1>
+        <div class="choices-grid" id="question-choices"></div>
+        <button class="primary-button" type="button" id="show-answer">Antwort anzeigen</button>
+        <section class="answer-panel hidden" id="answer-panel">
+          <div class="answer-kicker">Antwort</div>
+          <div class="answer-text" id="answer-text"></div>
+          <div class="result-actions">
+            <button class="result-button" type="button" data-result="0" id="award-team-0">Team 1</button>
+            <button class="result-button neutral" type="button" data-result="none">Keiner</button>
+            <button class="result-button" type="button" data-result="1" id="award-team-1">Team 2</button>
+          </div>
+        </section>
+      </article>
+    </div>
+
+    <div class="overlay hidden" id="editor-overlay" aria-hidden="true">
+      <article class="editor-modal">
+        <button class="close-button" type="button" id="editor-close" aria-label="Schließen">×</button>
+        <div class="editor-kicker" id="editor-kicker"></div>
+        <input class="editor-input" id="editor-input" />
+        <div class="editor-actions">
+          <button class="quiet-button" type="button" id="editor-clear">Löschen</button>
+          <button class="primary-button" type="button" id="editor-save">Speichern</button>
+        </div>
+      </article>
+    </div>
+
+    <script id="questions-data" type="application/json">
+      {
+        "categories": [
+          {
+            "title": "Mechanik",
+            "questions": [
+              {
+                "question": "Welche Größe ist das Produkt aus Masse und Beschleunigung?",
+                "answer": "Kraft",
+                "choices": ["Energie", "Kraft", "Leistung", "Impuls"]
+              },
+              {
+                "question": "Wie nennt man die Energie, die ein Körper wegen seiner Höhe besitzt?",
+                "answer": "Lageenergie",
+                "choices": ["Spannenergie", "Lageenergie", "Wärmeenergie", "Kernenergie"]
+              },
+              {
+                "question": "Welche Einheit hat die Geschwindigkeit?",
+                "answer": "Meter pro Sekunde",
+                "choices": ["Newton", "Meter pro Sekunde", "Joule", "Watt"]
+              },
+              {
+                "question": "Wie lautet das Trägheitsgesetz mit dem Namen seines Urhebers?",
+                "answer": "Erstes Newtonsches Gesetz",
+                "choices": ["Hookesches Gesetz", "Erstes Newtonsches Gesetz", "Ohmsches Gesetz", "Boyle-Mariotte-Gesetz"]
+              }
+            ]
+          },
+          {
+            "title": "Elektrizität",
+            "questions": [
+              {
+                "question": "Welche Einheit hat die elektrische Spannung?",
+                "answer": "Volt",
+                "choices": ["Ampere", "Ohm", "Volt", "Tesla"]
+              },
+              {
+                "question": "Welches Bauteil begrenzt in einfachen Schaltungen den Stromfluss?",
+                "answer": "Widerstand",
+                "choices": ["Spule", "Widerstand", "Diode", "Transistor"]
+              },
+              {
+                "question": "Wie heißt die Regel U = R · I?",
+                "answer": "Ohmsches Gesetz",
+                "choices": ["Coulomb-Gesetz", "Ohmsches Gesetz", "Faradaysches Gesetz", "Lenzsche Regel"]
+              },
+              {
+                "question": "In welcher Richtung fließt der elektrische Strom per Konvention?",
+                "answer": "Vom Pluspol zum Minuspol"
+              }
+            ]
+          },
+          {
+            "title": "Optik",
+            "questions": [
+              {
+                "question": "Wie nennt man die Zerlegung von weißem Licht in seine Farben?",
+                "answer": "Dispersion",
+                "choices": ["Beugung", "Reflexion", "Dispersion", "Brechung"]
+              },
+              {
+                "question": "Welcher Spiegel erzeugt ein vergrößertes aufrechtes Bild bei kleiner Gegenstandsweite?",
+                "answer": "Hohlspiegel"
+              },
+              {
+                "question": "Was ändert sich beim Übergang von Luft in Glas sicher?",
+                "answer": "Die Ausbreitungsgeschwindigkeit des Lichts"
+              },
+              {
+                "question": "Wie heißt der Punkt, in dem parallel einfallende Strahlen nach der Linse zusammentreffen?",
+                "answer": "Brennpunkt",
+                "choices": ["Pol", "Brennpunkt", "Scheitelpunkt", "Lotfußpunkt"]
+              }
+            ]
+          },
+          {
+            "title": "Wärme",
+            "questions": [
+              {
+                "question": "Welche Temperaturskala beginnt beim absoluten Nullpunkt?",
+                "answer": "Kelvin-Skala",
+                "choices": ["Celsius-Skala", "Fahrenheit-Skala", "Kelvin-Skala", "Rankine-Skala"]
+              },
+              {
+                "question": "Wie nennt man den Übergang von flüssig zu gasförmig?",
+                "answer": "Verdampfen"
+              },
+              {
+                "question": "Welche Form der Wärmeübertragung braucht kein Medium?",
+                "answer": "Wärmestrahlung",
+                "choices": ["Wärmeleitung", "Konvektion", "Wärmestrahlung", "Diffusion"]
+              },
+              {
+                "question": "Wie heißt die Energie, die mit der ungeordneten Bewegung von Teilchen zusammenhängt?",
+                "answer": "Innere Energie"
+              }
+            ]
+          },
+          {
+            "title": "Astronomie",
+            "questions": [
+              {
+                "question": "Welcher Himmelskörper steht im Zentrum unseres Sonnensystems?",
+                "answer": "Die Sonne",
+                "choices": ["Der Mond", "Die Erde", "Die Sonne", "Der Jupiter"]
+              },
+              {
+                "question": "Wie heißt unsere Galaxie?",
+                "answer": "Milchstraße",
+                "choices": ["Andromeda", "Milchstraße", "Orionnebel", "Magellansche Wolke"]
+              },
+              {
+                "question": "Welche Kraft hält die Planeten auf ihren Bahnen?",
+                "answer": "Gravitation"
+              },
+              {
+                "question": "Wie nennt man einen Stern, der plötzlich stark heller wird und dann wieder verblasst?",
+                "answer": "Nova"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <script>
+      const BOARD_COLUMNS = 5;
+      const BOARD_ROWS = 4;
+      const VALUES = [100, 200, 300, 400];
+      const STORAGE_KEY = "quiz-board-state-v1";
+      const RESET_TAP_WINDOW_MS = 2200;
+      const RESET_TAP_COUNT = 5;
+
+      const elements = {
+        board: document.getElementById("board"),
+        resetOrb: document.getElementById("reset-orb"),
+        teamNameEls: [document.getElementById("team-0-name"), document.getElementById("team-1-name")],
+        teamScoreEls: [document.getElementById("team-0-score"), document.getElementById("team-1-score")],
+        questionOverlay: document.getElementById("question-overlay"),
+        questionCategory: document.getElementById("question-category"),
+        questionText: document.getElementById("question-text"),
+        questionChoices: document.getElementById("question-choices"),
+        showAnswer: document.getElementById("show-answer"),
+        answerPanel: document.getElementById("answer-panel"),
+        questionClose: document.getElementById("question-close"),
+        awardTeam0: document.getElementById("award-team-0"),
+        awardTeam1: document.getElementById("award-team-1"),
+        editorOverlay: document.getElementById("editor-overlay"),
+        editorClose: document.getElementById("editor-close"),
+        editorKicker: document.getElementById("editor-kicker"),
+        editorInput: document.getElementById("editor-input"),
+        editorClear: document.getElementById("editor-clear"),
+        editorSave: document.getElementById("editor-save"),
+      };
+
+      const state = {
+        data: null,
+        game: null,
+        currentQuestion: null,
+        editor: null,
+        resetTaps: [],
+      };
+
+      function defaultGameState() {
+        return {
+          teamNames: ["Team 1", "Team 2"],
+          scores: [0, 0],
+          consumed: {},
+        };
+      }
+
+      function sanitizeGameState(raw, data) {
+        const clean = defaultGameState();
+        if (Array.isArray(raw?.teamNames)) {
+          clean.teamNames = [0, 1].map((index) => String(raw.teamNames[index] || clean.teamNames[index]).slice(0, 24) || clean.teamNames[index]);
+        }
+        if (Array.isArray(raw?.scores)) {
+          clean.scores = [0, 1].map((index) => Number.isFinite(Number(raw.scores[index])) ? Number(raw.scores[index]) : 0);
+        }
+        if (raw?.consumed && typeof raw.consumed === "object") {
+          for (const [key, value] of Object.entries(raw.consumed)) {
+            if (!questionExists(data, key)) continue;
+            clean.consumed[key] = {
+              awardedTeam: value?.awardedTeam === 0 || value?.awardedTeam === 1 ? value.awardedTeam : null,
+              points: Number.isFinite(Number(value?.points)) ? Number(value.points) : valueForKey(key),
+            };
+          }
+        }
+        return clean;
+      }
+
+      function questionExists(data, key) {
+        const [categoryIndex, rowIndex] = key.split("-").map(Number);
+        return Boolean(data?.categories?.[categoryIndex]?.questions?.[rowIndex]);
+      }
+
+      function valueForKey(key) {
+        const [, rowIndex] = key.split("-").map(Number);
+        return VALUES[rowIndex] ?? 0;
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.game));
+      }
+
+      function loadState(data) {
+        let raw = null;
+        try {
+          raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        } catch {
+          raw = null;
+        }
+        state.game = sanitizeGameState(raw, data);
+        saveState();
+      }
+
+      function buildBoard() {
+        elements.board.innerHTML = "";
+        const categories = state.data.categories.slice(0, BOARD_COLUMNS);
+
+        categories.forEach((category) => {
+          const categoryCell = document.createElement("div");
+          categoryCell.className = "category-cell";
+          categoryCell.textContent = category.title || "";
+          elements.board.append(categoryCell);
+        });
+
+        for (let rowIndex = 0; rowIndex < BOARD_ROWS; rowIndex += 1) {
+          for (let categoryIndex = 0; categoryIndex < BOARD_COLUMNS; categoryIndex += 1) {
+            const key = `${categoryIndex}-${rowIndex}`;
+            const question = categories[categoryIndex]?.questions?.[rowIndex];
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "value-cell";
+            button.dataset.key = key;
+            button.textContent = String(VALUES[rowIndex]);
+            if (!question) {
+              button.classList.add("missing");
+              button.disabled = true;
+            }
+            elements.board.append(button);
+          }
+        }
+      }
+
+      function renderBoardState() {
+        elements.board.querySelectorAll(".value-cell[data-key]").forEach((button) => {
+          button.classList.toggle("used", Boolean(state.game.consumed[button.dataset.key]));
+        });
+      }
+
+      function renderScoreboard() {
+        state.game.teamNames.forEach((name, index) => {
+          elements.teamNameEls[index].textContent = name;
+        });
+        state.game.scores.forEach((score, index) => {
+          elements.teamScoreEls[index].textContent = score;
+        });
+        elements.awardTeam0.textContent = state.game.teamNames[0];
+        elements.awardTeam1.textContent = state.game.teamNames[1];
+      }
+
+      function renderChoices(choices) {
+        elements.questionChoices.innerHTML = "";
+        if (!Array.isArray(choices) || !choices.length) return;
+        choices.forEach((choice) => {
+          const card = document.createElement("div");
+          card.className = "choice-card";
+          const text = document.createElement("div");
+          text.className = "choice-text";
+          text.textContent = choice;
+          card.append(text);
+          elements.questionChoices.append(card);
+        });
+      }
+
+      function renderAnswerOnly(answer) {
+        elements.questionChoices.innerHTML = "";
+        const card = document.createElement("div");
+        card.className = "choice-card answer-only revealed-correct";
+        const text = document.createElement("div");
+        text.className = "choice-text";
+        text.textContent = answer;
+        card.append(text);
+        elements.questionChoices.append(card);
+      }
+
+      function openQuestion(key) {
+        const [categoryIndex, rowIndex] = key.split("-").map(Number);
+        const category = state.data.categories[categoryIndex];
+        const question = category?.questions?.[rowIndex];
+        if (!question) return;
+
+        state.currentQuestion = {
+          key,
+          value: VALUES[rowIndex],
+          categoryTitle: category.title || "",
+          question: question.question || "",
+          answer: question.answer || "",
+          choices: Array.isArray(question.choices) ? question.choices : [],
+        };
+
+        elements.questionCategory.textContent = `${state.currentQuestion.categoryTitle} · ${state.currentQuestion.value}`;
+        elements.questionText.textContent = state.currentQuestion.question;
+        elements.answerPanel.classList.add("hidden");
+        elements.showAnswer.classList.remove("hidden");
+        renderChoices(state.currentQuestion.choices);
+        elements.questionOverlay.classList.remove("hidden");
+        elements.questionOverlay.setAttribute("aria-hidden", "false");
+      }
+
+      function closeQuestion() {
+        state.currentQuestion = null;
+        elements.questionOverlay.classList.add("hidden");
+        elements.questionOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      function revealAnswer() {
+        if (!state.currentQuestion) return;
+        if (state.currentQuestion.choices.length) {
+          const correct = state.currentQuestion.answer.trim().toLowerCase();
+          elements.questionChoices.querySelectorAll(".choice-card").forEach((card) => {
+            const text = card.querySelector(".choice-text")?.textContent?.trim().toLowerCase() || "";
+            card.classList.toggle("revealed-correct", text === correct);
+          });
+        } else {
+          renderAnswerOnly(state.currentQuestion.answer);
+        }
+        elements.answerPanel.classList.remove("hidden");
+        elements.showAnswer.classList.add("hidden");
+      }
+
+      function applyResult(teamIndex) {
+        if (!state.currentQuestion) return;
+        const { key, value } = state.currentQuestion;
+        state.game.consumed[key] = {
+          awardedTeam: teamIndex === 0 || teamIndex === 1 ? teamIndex : null,
+          points: value,
+        };
+        if (teamIndex === 0 || teamIndex === 1) {
+          state.game.scores[teamIndex] += value;
+        }
+        saveState();
+        renderScoreboard();
+        renderBoardState();
+        closeQuestion();
+      }
+
+      function undoConsumedQuestion(key) {
+        const consumed = state.game.consumed[key];
+        if (!consumed) return;
+        if (consumed.awardedTeam === 0 || consumed.awardedTeam === 1) {
+          state.game.scores[consumed.awardedTeam] -= consumed.points;
+        }
+        delete state.game.consumed[key];
+        saveState();
+        renderScoreboard();
+        renderBoardState();
+      }
+
+      function openEditor(mode) {
+        const configs = {
+          "team-0-name": { type: "text", teamIndex: 0, label: "Teamname", value: state.game.teamNames[0], maxLength: 24 },
+          "team-1-name": { type: "text", teamIndex: 1, label: "Teamname", value: state.game.teamNames[1], maxLength: 24 },
+          "team-0-score": { type: "number", teamIndex: 0, label: "Punktestand", value: String(state.game.scores[0]), maxLength: 6 },
+          "team-1-score": { type: "number", teamIndex: 1, label: "Punktestand", value: String(state.game.scores[1]), maxLength: 6 },
+        };
+        const config = configs[mode];
+        if (!config) return;
+        state.editor = { ...config, draft: String(config.value ?? "") };
+        elements.editorKicker.textContent = `${state.game.teamNames[config.teamIndex]} · ${config.label}`;
+        elements.editorInput.value = state.editor.draft;
+        elements.editorInput.type = config.type === "number" ? "number" : "text";
+        elements.editorInput.maxLength = config.maxLength;
+        elements.editorInput.placeholder = config.type === "number" ? "0" : "Name";
+        elements.editorOverlay.classList.remove("hidden");
+        elements.editorOverlay.setAttribute("aria-hidden", "false");
+        window.setTimeout(() => elements.editorInput.focus(), 20);
+      }
+
+      function closeEditor() {
+        state.editor = null;
+        elements.editorOverlay.classList.add("hidden");
+        elements.editorOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      function clearEditor() {
+        if (!state.editor) return;
+        state.editor.draft = "";
+        elements.editorInput.value = "";
+        elements.editorInput.focus();
+      }
+
+      function saveEditor() {
+        if (!state.editor) return;
+        const editor = state.editor;
+        editor.draft = elements.editorInput.value;
+        if (editor.type === "text") {
+          const next = editor.draft.trim() || (editor.teamIndex === 0 ? "Team 1" : "Team 2");
+          state.game.teamNames[editor.teamIndex] = next.slice(0, editor.maxLength);
+        } else {
+          const next = editor.draft.trim();
+          state.game.scores[editor.teamIndex] = next === "" || next === "-" ? 0 : Number(next);
+        }
+        saveState();
+        renderScoreboard();
+        closeEditor();
+      }
+
+      function handleResetTap() {
+        const now = Date.now();
+        state.resetTaps = [...state.resetTaps.filter((time) => now - time < RESET_TAP_WINDOW_MS), now];
+        if (state.resetTaps.length < RESET_TAP_COUNT) return;
+        state.resetTaps = [];
+        state.game = defaultGameState();
+        saveState();
+        renderScoreboard();
+        renderBoardState();
+        closeQuestion();
+        closeEditor();
+      }
+
+      function loadEmbeddedData() {
+        const raw = document.getElementById("questions-data")?.textContent || "";
+        const data = JSON.parse(raw);
+        if (!Array.isArray(data?.categories)) {
+          throw new Error("Eingebettete Fragen haben kein gültiges categories-Feld");
+        }
+        return data;
+      }
+
+      function showLoadError(error) {
+        elements.board.innerHTML = "";
+        const panel = document.createElement("div");
+        panel.className = "category-cell";
+        panel.style.gridColumn = "1 / -1";
+        panel.style.minHeight = "180px";
+        panel.textContent = error.message;
+        elements.board.append(panel);
+      }
+
+      function bindEvents() {
+        elements.board.addEventListener("click", (event) => {
+          const tile = event.target.closest(".value-cell[data-key]");
+          if (!tile) return;
+          const key = tile.dataset.key;
+          if (state.game.consumed[key]) {
+            undoConsumedQuestion(key);
+            return;
+          }
+          openQuestion(key);
+        });
+
+        elements.showAnswer.addEventListener("click", revealAnswer);
+        elements.questionClose.addEventListener("click", closeQuestion);
+        elements.editorClose.addEventListener("click", closeEditor);
+        elements.editorClear.addEventListener("click", clearEditor);
+        elements.editorSave.addEventListener("click", saveEditor);
+        elements.resetOrb.addEventListener("click", handleResetTap);
+        elements.editorInput.addEventListener("input", () => {
+          if (!state.editor) return;
+          if (state.editor.type === "number") {
+            elements.editorInput.value = elements.editorInput.value.replace(/[^\d-]/g, "");
+            if ((elements.editorInput.value.match(/-/g) || []).length > 1) {
+              elements.editorInput.value = elements.editorInput.value.replace(/-/g, "");
+            }
+            if (elements.editorInput.value.includes("-") && !elements.editorInput.value.startsWith("-")) {
+              elements.editorInput.value = elements.editorInput.value.replace(/-/g, "");
+            }
+          }
+          state.editor.draft = elements.editorInput.value;
+        });
+        elements.editorInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") saveEditor();
+        });
+
+        document.querySelectorAll("[data-edit]").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            openEditor(button.dataset.edit);
+          });
+        });
+
+        elements.questionOverlay.addEventListener("click", (event) => {
+          if (event.target === elements.questionOverlay) closeQuestion();
+        });
+        elements.editorOverlay.addEventListener("click", (event) => {
+          if (event.target === elements.editorOverlay) closeEditor();
+        });
+
+        document.querySelectorAll("[data-result]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const raw = button.dataset.result;
+            const teamIndex = raw === "none" ? null : Number(raw);
+            applyResult(teamIndex);
+          });
+        });
+      }
+
+      function init() {
+        bindEvents();
+        try {
+          state.data = loadEmbeddedData();
+          loadState(state.data);
+          buildBoard();
+          renderScoreboard();
+          renderBoardState();
+        } catch (error) {
+          showLoadError(error instanceof Error ? error : new Error("Unbekannter Ladefehler"));
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
