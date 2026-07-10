@@ -34,13 +34,13 @@
         },
         {
           "question": "Wofür ist diese Person heute am bekanntesten?",
-          "image": "./assets/marilyn-monroe.jpg",
+          "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Monroecirca1953.jpg/800px-Monroecirca1953.jpg",
           "choices": ["Film und Hollywood", "Raumfahrt", "Politik", "klassische Musik"],
           "answer": "Film und Hollywood"
         },
         {
           "question": "Welches Werk passt zu dieser Person?",
-          "image": "./assets/vincent-van-gogh.jpg",
+          "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/800px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg",
           "choices": ["Sternennacht", "Mona Lisa", "Die Schule von Athen", "Der Schrei"],
           "answer": "Sternennacht"
         },

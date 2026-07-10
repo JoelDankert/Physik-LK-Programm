@@ -446,10 +446,51 @@ function enableQuestionImageInteraction() {
   elements.questionImage.classList.remove("is-disabled");
 }
 
+function classifyQuestionImage(src, alt, image) {
+  const text = `${src || ""} ${alt || ""}`.toLowerCase();
+  const width = Number(image?.naturalWidth) || 0;
+  const height = Number(image?.naturalHeight) || 0;
+  const aspectRatio = width > 0 && height > 0 ? width / height : 1;
+
+  if (/(flagge|flag|fahne)/.test(text)) return "contain";
+  if (height > width * 1.1) return "portrait";
+  if (aspectRatio >= 1.45) return "contain";
+  return "cover";
+}
+
+function applyQuestionImageLayout(kind) {
+  elements.questionImageWrap.classList.remove(
+    "question-image-wrap--contain",
+    "question-image-wrap--cover",
+    "question-image-wrap--portrait"
+  );
+  elements.questionImage.classList.remove(
+    "question-image--contain",
+    "question-image--cover",
+    "question-image--portrait"
+  );
+
+  if (kind === "contain") {
+    elements.questionImageWrap.classList.add("question-image-wrap--contain");
+    elements.questionImage.classList.add("question-image--contain");
+    return;
+  }
+
+  if (kind === "portrait") {
+    elements.questionImageWrap.classList.add("question-image-wrap--portrait");
+    elements.questionImage.classList.add("question-image--portrait");
+    return;
+  }
+
+  elements.questionImageWrap.classList.add("question-image-wrap--cover");
+  elements.questionImage.classList.add("question-image--cover");
+}
+
 function clearQuestionImage() {
   state.questionImageToken += 1;
   disableQuestionImageInteraction();
   elements.questionImageWrap.classList.add("hidden");
+  applyQuestionImageLayout("contain");
   elements.questionImage.removeAttribute("src");
   elements.questionImage.alt = "";
 }
@@ -461,6 +502,7 @@ function loadQuestionImage(src, alt) {
   const loader = new Image();
   loader.onload = () => {
     if (token !== state.questionImageToken) return;
+    applyQuestionImageLayout(classifyQuestionImage(src, alt, loader));
     elements.questionImage.src = src;
     elements.questionImage.alt = alt;
     elements.questionImageWrap.classList.remove("hidden");
