@@ -1,0 +1,81 @@
+{
+  "categories": [
+    {
+      "title": "Physik",
+      "questions": [
+        {
+          "question": "Warum kann Schall sich im Weltall nicht ausbreiten?",
+          "answer": "Weil dort kein Medium vorhanden ist. Schall benötigt zur Ausbreitung ein Medium."
+        },
+        {
+          "question": "Welche Farbe besitzt das energiereichste sichtbare Licht?",
+          "choices": ["Rot", "Gelb", "Blau", "Violett"],
+          "answer": "Violettes Licht hat die höchste Frequenz des sichtbaren Lichts.\n\n$$E = h \\cdot f$$"
+        },
+        {
+          "question": "Wie lautet die Formel für die Energie im linearen Potentialtopf?",
+          "answer": "$$E_n=\\frac{h^2 \\cdot n^2}{8 \\cdot m \\cdot L^2}$$"
+        },
+        {
+          "question": "Welches Emissionsspektrum ist hier erkennbar?",
+          "image": "./assets/spektral.jpg",
+          "answer": "Das Emissionsspektrum von Wasserstoff. Es entsteht durch Elektronenübergänge zwischen Energieniveaus."
+        }
+      ]
+    },
+    {
+      "title": "Berühmtheiten",
+      "questions": [
+        {
+          "question": "Wer sagte: ‘Phantasie ist wichtiger als Wissen’?",
+          "choices": ["Albert Einstein", "Niels Bohr", "Max Planck", "Galileo Galilei"],
+          "answer": "Albert Einstein"
+        },
+        {
+          "question": "Wofür ist diese Person heute am bekanntesten?",
+          "image": "./assets/marilyn.svg",
+          "choices": ["Film und Hollywood", "Raumfahrt", "Politik", "klassische Musik"],
+          "answer": "Film und Hollywood"
+        },
+        {
+          "question": "Welches Werk passt zu dieser Person?",
+          "image": "./assets/vangogh.svg",
+          "choices": ["Sternennacht", "Mona Lisa", "Die Schule von Athen", "Der Schrei"],
+          "answer": "Sternennacht"
+        },
+        {
+          "question": "Welche berühmte Person war nie Präsident der USA?",
+          "choices": ["Benjamin Franklin", "Abraham Lincoln", "John F. Kennedy", "Barack Obama"],
+          "answer": "Benjamin Franklin"
+        }
+      ]
+    },
+    {
+      "title": "True or False",
+      "questions": [
+        { "question": "TBD", "answer": "TBD" },
+        { "question": "TBD", "answer": "TBD" },
+        { "question": "TBD", "answer": "TBD" },
+        { "question": "TBD", "answer": "TBD" }
+      ]
+    },
+    {
+      "title": "Geographie",
+      "questions": [
+        { "question": "Zu welchem Land gehört diese Flagge?", "image":"./assets/thailand.jpg","answer": "Thailand" },
+        { "question": "Welches Land hat die meisten Nachbarsstaaten?", "answer": "China und Russland (je 14)" },
+        { "question": "Welcher Berg ist hier zu sehen?", "image":"./assets/matterhorn.jpg", "answer": "Das Matterhorn in der Schweiz" },
+        { "question": "Zu welchem Land gehört diese Flagge?", "image":"./assets/monaco.png", "answer": "Monaco (4:5 statt 2:3 Seitenverhältnis)" }
+      ]
+    },
+    {
+      "title": "Emoji Raten",
+      "questions": [
+        { "question": "LK Kurs: ♀️", "answer": "Riana" },
+        { "question": "Experiment: ☢️🐈‍⬛", "answer": "Schrödingers Katze" },
+        { "question": "Lehrkraft: 📯 🪡", "answer": "Frau Horn" },
+        { "question": "Lehrkraft: 📝✔️", "answer": "Herr Herlet" }
+      ]
+    }
+  ]
+}

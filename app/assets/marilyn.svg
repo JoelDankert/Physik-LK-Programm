@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">Stilisierte Filmikone</title>
+  <desc id="desc">Pop-Art-inspiriertes Portraet mit blondem Haar und Filmklappe als Hinweis auf Hollywood.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fee7d6"/>
+      <stop offset="100%" stop-color="#f8b0a8"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="900" fill="url(#bg)"/>
+  <circle cx="450" cy="350" r="210" fill="#f7d6c1"/>
+  <path d="M255 320c25-145 130-205 230-205 112 0 185 71 210 180-40-25-68-58-84-97-21 58-83 99-156 96-77-2-144 12-200 26z" fill="#f6d35d"/>
+  <path d="M292 267c20-58 75-120 155-120 48 0 91 17 128 49-57-8-110 11-152 47-38-6-80 1-131 24z" fill="#ffe68a"/>
+  <ellipse cx="376" cy="338" rx="18" ry="12" fill="#3a2417"/>
+  <ellipse cx="521" cy="338" rx="18" ry="12" fill="#3a2417"/>
+  <path d="M389 430c41 29 82 29 123 0-8 54-34 88-62 88s-54-34-61-88z" fill="#bf3d4e"/>
+  <path d="M348 300c36-19 65-23 97-13" fill="none" stroke="#b57d63" stroke-width="11" stroke-linecap="round"/>
+  <path d="M471 287c36-10 65-6 92 14" fill="none" stroke="#b57d63" stroke-width="11" stroke-linecap="round"/>
+  <rect x="94" y="628" width="284" height="162" rx="20" fill="#1f2937"/>
+  <rect x="116" y="650" width="240" height="118" rx="12" fill="#f6f7fb"/>
+  <path d="M116 690h240M116 730h240M176 650v118M236 650v118M296 650v118" stroke="#1f2937" stroke-width="10"/>
+  <text x="460" y="755" font-family="Georgia, serif" font-size="86" fill="#7f1d1d">Hollywood</text>
+</svg>
