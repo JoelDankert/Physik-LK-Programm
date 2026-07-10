@@ -309,6 +309,11 @@ button {
   animation: sink-out 520ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+.overlay.is-closing .question-modal,
+.overlay.is-closing .question-modal * {
+  pointer-events: none !important;
+}
+
 .question-modal {
   padding: 40px 38px 32px;
   overflow: hidden;

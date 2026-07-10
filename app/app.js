@@ -485,6 +485,7 @@ function openQuestion(key) {
     categoryTitle: category.title || "",
     question: question.question || "",
     answer: question.answer || "",
+    correctChoice: question.correctChoice || "",
     image: question.image || "",
     choices: Array.isArray(question.choices) ? question.choices : [],
   };
@@ -533,7 +534,7 @@ function closeMenu() {
 function revealAnswer() {
   if (!state.currentQuestion) return;
   if (state.currentQuestion.choices.length) {
-    const correct = normalizeComparable(state.currentQuestion.answer);
+    const correct = normalizeComparable(state.currentQuestion.correctChoice || state.currentQuestion.answer);
     elements.questionChoices.querySelectorAll(".choice-card").forEach((card) => {
       card.classList.toggle("revealed-correct", card.dataset.rawChoice === correct);
     });
