@@ -457,10 +457,6 @@ function classifyQuestionImage(src, alt, image) {
 }
 
 function getQuestionImageObjectPosition(kind) {
-  if (kind === "portrait") {
-    return "center 18%";
-  }
-
   return "center";
 }
 
