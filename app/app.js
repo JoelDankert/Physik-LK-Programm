@@ -450,12 +450,18 @@ function classifyQuestionImage(src, alt, image) {
   const text = `${src || ""} ${alt || ""}`.toLowerCase();
   const width = Number(image?.naturalWidth) || 0;
   const height = Number(image?.naturalHeight) || 0;
-  const aspectRatio = width > 0 && height > 0 ? width / height : 1;
 
   if (/(flagge|flag|fahne)/.test(text)) return "contain";
   if (height > width * 1.1) return "portrait";
-  if (aspectRatio >= 1.45) return "contain";
   return "cover";
+}
+
+function getQuestionImageObjectPosition(kind) {
+  if (kind === "portrait") {
+    return "center 18%";
+  }
+
+  return "center";
 }
 
 function applyQuestionImageLayout(kind) {
@@ -469,6 +475,7 @@ function applyQuestionImageLayout(kind) {
     "question-image--cover",
     "question-image--portrait"
   );
+  elements.questionImage.style.objectPosition = getQuestionImageObjectPosition(kind);
 
   if (kind === "contain") {
     elements.questionImageWrap.classList.add("question-image-wrap--contain");
