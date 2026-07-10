@@ -70,7 +70,7 @@
           "answer": "True"
         },
         {
-          "question": "Adnan stellte Herrn Lodahl in einer Diskussion über einen Lehrerkonflikt die legendäre Frage: \"Ziehen Sie dann Ihren Pferdeschwanz ein?\"",
+          "question": "In einem Streit zwischen Lehrern befahl Adnan Herrn Lodahl, seinen Pferdeschwanz einzuziehen.",
           "choices": ["True", "False"],
           "answer": "False"
         }
