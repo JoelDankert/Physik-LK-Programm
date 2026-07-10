@@ -46,6 +46,7 @@ const state = {
   currentQuestion: null,
   editor: null,
   pendingUndoKey: null,
+  questionImageToken: 0,
   partySystem: null,
   partyResizeHandler: null,
   partyMode: "idle",
@@ -437,6 +438,41 @@ function renderAnswerOnly(answer) {
   elements.questionChoices.append(card);
 }
 
+function disableQuestionImageInteraction() {
+  elements.questionImage.classList.add("is-disabled");
+}
+
+function enableQuestionImageInteraction() {
+  elements.questionImage.classList.remove("is-disabled");
+}
+
+function clearQuestionImage() {
+  state.questionImageToken += 1;
+  disableQuestionImageInteraction();
+  elements.questionImageWrap.classList.add("hidden");
+  elements.questionImage.removeAttribute("src");
+  elements.questionImage.alt = "";
+}
+
+function loadQuestionImage(src, alt) {
+  clearQuestionImage();
+  if (!src) return;
+  const token = state.questionImageToken;
+  const loader = new Image();
+  loader.onload = () => {
+    if (token !== state.questionImageToken) return;
+    elements.questionImage.src = src;
+    elements.questionImage.alt = alt;
+    elements.questionImageWrap.classList.remove("hidden");
+    enableQuestionImageInteraction();
+  };
+  loader.onerror = () => {
+    if (token !== state.questionImageToken) return;
+    clearQuestionImage();
+  };
+  loader.src = src;
+}
+
 function openQuestion(key) {
   const [categoryIndex, rowIndex] = key.split("-").map(Number);
   const category = state.data.categories[categoryIndex];
@@ -455,15 +491,7 @@ function openQuestion(key) {
 
   elements.questionCategory.textContent = `${state.currentQuestion.categoryTitle} · ${state.currentQuestion.value}`;
   renderRichText(elements.questionText, state.currentQuestion.question);
-  if (state.currentQuestion.image) {
-    elements.questionImage.src = state.currentQuestion.image;
-    elements.questionImage.alt = state.currentQuestion.question || "Fragenbild";
-    elements.questionImageWrap.classList.remove("hidden");
-  } else {
-    elements.questionImage.removeAttribute("src");
-    elements.questionImage.alt = "";
-    elements.questionImageWrap.classList.add("hidden");
-  }
+  loadQuestionImage(state.currentQuestion.image, state.currentQuestion.question || "Fragenbild");
   elements.answerPanel.classList.add("hidden");
   elements.showAnswer.classList.remove("hidden");
   renderChoices(state.currentQuestion.choices);
@@ -484,8 +512,11 @@ function animateOverlayClose(overlay, onDone) {
 }
 
 function closeQuestion() {
+  disableQuestionImageInteraction();
+  closeImageLightbox();
   animateOverlayClose(elements.questionOverlay, () => {
     state.currentQuestion = null;
+    clearQuestionImage();
   });
 }
 
@@ -592,6 +623,7 @@ function closeFinishScreen() {
 }
 
 function openImageLightbox() {
+  if (elements.questionImage.classList.contains("is-disabled")) return;
   const src = elements.questionImage.getAttribute("src");
   if (!src) return;
   elements.imageLightboxImage.src = src;

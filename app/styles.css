@@ -385,6 +385,11 @@ button {
   cursor: zoom-in;
 }
 
+.question-image.is-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
 .choices-grid {
   margin-top: 22px;
   display: grid;
