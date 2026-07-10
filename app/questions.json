@@ -56,7 +56,7 @@
       "questions": [
         {
           "question": "Dieses Bild beschreibt den Physik LK perfekt.",
-          "image": "./assets/physik-lk-wa2.jpg",
+          "image": "./assets/physik-lk-screenshot.png",
           "choices": ["True", "False"],
           "answer": "True"
         },
