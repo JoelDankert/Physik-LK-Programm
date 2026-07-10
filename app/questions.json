@@ -53,10 +53,27 @@
     {
       "title": "True or False",
       "questions": [
-        { "question": "TBD", "answer": "TBD" },
-        { "question": "TBD", "answer": "TBD" },
-        { "question": "TBD", "answer": "TBD" },
-        { "question": "TBD", "answer": "TBD" }
+        {
+          "question": "Dieses Bild beschreibt den Physik LK perfekt.",
+          "image": "./assets/physik-lk-wa2.jpg",
+          "choices": ["True", "False"],
+          "answer": "True"
+        },
+        {
+          "question": "Herr Lodahl sagte einmal: \"Das ist keine Physik, das ist Charakterbildung mit Formeln.\"",
+          "choices": ["True", "False"],
+          "answer": "False"
+        },
+        {
+          "question": "Herr Lodahl ist der festen Überzeugung, dass Länge nicht so wichtig ist (bei Antennen natürlich).",
+          "choices": ["True", "False"],
+          "answer": "True"
+        },
+        {
+          "question": "Adnan stellte Herrn Lodahl in einer Diskussion über einen Lehrerkonflikt die legendäre Frage: \"Ziehen Sie dann Ihren Pferdeschwanz ein?\"",
+          "choices": ["True", "False"],
+          "answer": "False"
+        }
       ]
     },
     {
